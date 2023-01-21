@@ -1,0 +1,274 @@
+{{define "index/index.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{template "meta.html"}}
+
+    <title>Blog Home - Hui</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/static/css/blog-home.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/css/base.css">
+
+</head>
+
+<body>
+
+{{template "navigation.html" .}}
+
+<!-- Page Content -->
+<div class="container">
+
+    <div class="row">
+
+        <!-- Blog Entries Column -->
+        <div class="col-md-8">
+
+            <!--<h1 class="page-header">
+                Page Heading
+                <small>Secondary Text</small>
+            </h1>-->
+
+            <section class="article">
+            <!-- First Blog Post -->
+            {{range $postkey,$postvalue:=.posts}}
+                <div class="articleInfo">
+                    <span><a class="articleTitle" href="/post/{{$postvalue.ID}}">
+                        {{$length := len $postvalue.Title}}
+                        {{if ge $length 40}}
+                            {{truncate $postvalue.Title 40}}...
+                        {{else}}
+                            {{$postvalue.Title}}
+                        {{end}}
+                    </a></span>
+                    <span class="createdTime" style="margin-right: 10px;">
+                        {{dateFormat $postvalue.CreatedAt "06-01-02 15:04"}}
+                    </span>
+                </div>
+            <div class="articleBody">
+                {{$length := len $postvalue.Body}}
+                {{if ge $length 100}}
+                    {{truncate $postvalue.Body 100}}...
+                {{else}}
+                    {{$postvalue.Body}}
+                {{end}}
+                </div>
+
+                <!-- article tags -->
+                <div style="margin-top: 10px">
+                    <tr>
+                        {{range $tagkey,$tagvalue:=$postvalue.Tags}}
+                        <a href="/tag/{{$tagvalue.ID}}" class="changeTag"
+                           style="color: #888888;text-decoration: none;">
+                            # <span>{{$tagvalue.Name}}</span>&nbsp;&nbsp;
+                        </a>
+                        {{end}}
+                    </tr>
+                </div><!-- article tags -->
+
+            <hr>
+
+            {{end}}
+            </section>
+
+            <!-- Pager
+            <ul class="pager">
+                <li class="previous">
+                    <a href="#">&larr; Older</a>
+                </li>
+                <li class="next">
+                    <a href="#">Newer &rarr;</a>
+                </li>
+            </ul>-->
+
+            {{if le .pageIndex .totalPage}}
+            <ul class="pager">
+                {{if le .pageIndex 1}}
+                <li class="disabled"><a href="#">上一页</a></li>
+                {{else}}
+                <li class=""><a href="{{.path}}?page={{minus .pageIndex 1}}">上一页</a></li>
+                {{end}}
+                <li>{{ .pageIndex }} / {{ .totalPage }}</li>
+                {{if lt .pageIndex .totalPage }}
+                    <li class=""><a href="{{.path}}?page={{add .pageIndex 1}}">下一页</a></li>
+                {{ else}}
+                    <li class="disabled"><a href="#">下一页</a></li>
+                {{end}}
+            </ul>
+             {{end}}
+
+        </div>
+
+        <!-- Blog Sidebar Widgets Column -->
+        <div class="col-md-4">
+<!-- {{/*
+            <!-- Blog Search Well -->
+            <div class="well">
+                <h5>文章搜索</h5>
+                <div class="input-group">
+                    <input type="text" class="form-control">
+                    <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">
+                                <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                        </span>
+                </div>
+                <!-- /.input-group -->
+            </div>
+*/}} -->
+            <!-- Blog Categories Well -->
+            <div class="well">
+                <h5><span class="glyphicon glyphicon-tag"></span> 文章标签</h5>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <ul class="list-unstyled">
+                            {{range $tagkey,$tagvalue:=.tags}}
+                            {{if isEven $tagkey}}
+                            <li><a href="/tag/{{$tagvalue.ID}}">{{$tagvalue.Name}}({{$tagvalue.Total}})</a>
+                            </li>
+                            {{end}}
+                            {{end}}
+                        </ul>
+                    </div>
+                    <!-- /.col-lg-6 -->
+                    <div class="col-lg-6">
+                        <ul class="list-unstyled">
+                            {{range $tagkey,$tagvalue:=.tags}}
+                            {{if isOdd $tagkey}}
+                            <li><a href="/tag/{{$tagvalue.ID}}">{{$tagvalue.Name}}({{$tagvalue.Total}})</a>
+                            </li>
+                            {{end}}
+                            {{end}}
+                        </ul>
+                    </div>
+                    <!-- /.col-lg-6 -->
+                </div>
+                <!-- /.row -->
+            </div>
+
+            <!-- Side Widget Well -->
+            <div class="well">
+                <h5><span class="glyphicon glyphicon-folder-open"></span> 文章归档</h5>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <ul class="list-unstyled">
+                            {{range $archivekey,$archivevalue:=.archives}}
+                            {{if isEven $archivekey}}
+                            <li><a href="/archives/{{$archivevalue.Year}}/{{$archivevalue.Month}}">{{dateFormat $archivevalue.ArchiveDate "2006年01月"}}({{$archivevalue.Total}})</a>
+                            </li>
+                            {{end}}
+                            {{end}}
+                        </ul>
+                    </div>
+                    <!-- /.col-lg-6 -->
+                    <div class="col-lg-6">
+                        <ul class="list-unstyled">
+                            {{range $archivekey,$archivevalue:=.archives}}
+                            {{if isOdd $archivekey}}
+                            <li><a href="/archives/{{$archivevalue.Year}}/{{$archivevalue.Month}}">{{dateFormat $archivevalue.ArchiveDate "2006年01月"}}({{$archivevalue.Total}})</a>
+                            </li>
+                            {{end}}
+                            {{end}}
+                        </ul>
+                    </div>
+                    <!-- /.col-lg-6 -->
+                </div>
+                <!-- /.row -->
+            </div>
+
+            <div class="well">
+                <h5><span class="glyphicon glyphicon-fire"></span> 阅读最多</h5>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <ul class="list-unstyled">
+                        {{range $key,$post:=.maxReadPosts}}
+                        {{if isEven $key}}
+                            <li><a href="/post/{{$post.ID}}">{{$post.Title}}({{$post.View}})</a></li>
+                        {{end}}
+                        {{end}}
+                        </ul>
+                    </div>
+                    <!-- /.col-lg-6 -->
+                    <div class="col-lg-6">
+                        <ul class="list-unstyled">
+                        {{range $key,$post:=.maxReadPosts}}
+                        {{if isOdd $key}}
+                            <li><a href="/post/{{$post.ID}}">{{$post.Title}}({{$post.View}})</a></li>
+                        {{end}}
+                        {{end}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div>
+
+            <div class="well">
+                <h5><span class="glyphicon glyphicon-comment"></span> 评论最多</h5>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <ul class="list-unstyled">
+                        {{range $key,$post:=.maxCommentPosts}}
+                        {{if isEven $key}}
+                            <li><a href="/post/{{$post.ID}}">{{$post.Title}}({{$post.CommentTotal}})</a></li>
+                        {{end}}
+                        {{end}}
+                        </ul>
+                    </div>
+                    <!-- /.col-lg-6 -->
+                    <div class="col-lg-6">
+                        <ul class="list-unstyled">
+                        {{range $key,$post:=.maxCommentPosts}}
+                        {{if isOdd $key}}
+                            <li><a href="/post/{{$post.ID}}">{{$post.Title}}({{$post.CommentTotal}})</a></li>
+                        {{end}}
+                        {{end}}
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div>
+
+            <div class="well">
+                <h5><span class="glyphicon glyphicon-link"></span> 友情链接</h5>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <ul class="list-unstyled">
+                            {{range $key, $link := .links}}
+                            <li><a href="/link/{{$link.ID}}">{{ $link.Name }}</a>
+                            </li>
+                           {{end}}
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /.row -->
+
+    <hr>
+
+   {{template "footer.html"}}
+
+</div>
+<!-- /.container -->
+
+<!-- jQuery -->
+<script src="/static/libs/jquery/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/static/libs/bootstrap/js/bootstrap.min.js"></script>
+
+</body>
+</html>
+{{end}}

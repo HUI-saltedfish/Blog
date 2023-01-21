@@ -1,0 +1,41 @@
+{{define "errors/error.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Page - {{.message}}</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="/static/libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/static/css/blog-post.css" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="/static/libs/jquery/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="/static/libs/bootstrap/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="/static/css/base.css"/>
+
+</head>
+
+<body>
+    {{template "navigation.html"}}
+
+    <div class="container">
+        <div class="alert alert-warning" role="alert">
+            <a href="#" class="alert-link">{{.message}}</a>
+        </div>
+    </div>
+
+</body>
+
+</html>
+{{end}}
